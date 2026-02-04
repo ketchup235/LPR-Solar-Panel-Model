@@ -558,7 +558,7 @@ function createStarfield() {
 
     const material = new THREE.PointsMaterial({
         color: 0xffffff,
-        size: 0.1, // Your preferred size
+        size: 0.2, // Your preferred size
         sizeAttenuation: true,
         transparent: true,
         opacity: 0.8

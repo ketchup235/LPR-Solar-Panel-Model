@@ -223,3 +223,35 @@ canvas {
         left: 16px;
     }
 }
+
+/* --- FIX FOR MOBILE LANDSCAPE MODE --- */
+@media screen and (max-height: 500px) {
+    .specs-panel {
+        /* 1. Reset the "Bottom-Left" positioning */
+        bottom: auto;
+        left: auto;
+
+        /* 2. Move to "Top-Right" (under the Efficiency/Dimensions text) */
+        top: 85px;
+        /* Clears the top header text */
+        right: 24px;
+
+        /* 3. Make it scrollable so it fits on short screens */
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+
+        /* 4. Make text slightly smaller to save space */
+        padding: 10px;
+        width: 220px;
+    }
+
+    .specs-panel h3 {
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    .spec-row {
+        margin-bottom: 4px;
+        font-size: 11px;
+    }
+}
