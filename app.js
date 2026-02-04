@@ -50,6 +50,8 @@ function init() {
     controls.zoomSpeed = 0.8;
     controls.target.set(0, 0, 0);
 
+    createStarfield();
+
     // Lighting setup
     setupLighting();
 
@@ -524,6 +526,46 @@ function animate() {
     requestAnimationFrame(animate);
     controls.update();
     renderer.render(scene, camera);
+}
+
+function createStarfield() {
+    // Create geometry for 5,000 stars
+    const geometry = new THREE.BufferGeometry();
+    const count = 5000;
+    const positions = new Float32Array(count * 3);
+
+    for (let i = 0; i < count; i++) {
+        // 1. Generate a random direction on a sphere
+        // This ensures stars are all around us, not just in a box shape
+        const theta = 2 * Math.PI * Math.random();
+        const phi = Math.acos(2 * Math.random() - 1);
+
+        // 2. Set a distance: Keep them FAR away (between 20m and 90m)
+        // The "20" is the Safe Zone - no stars can exist closer than 20 meters.
+        const distance = 20 + Math.random() * 70;
+
+        // 3. Convert from Spherical to Cartesian (x, y, z) coordinates
+        const x = distance * Math.sin(phi) * Math.cos(theta);
+        const y = distance * Math.sin(phi) * Math.sin(theta);
+        const z = distance * Math.cos(phi);
+
+        positions[i * 3] = x;
+        positions[i * 3 + 1] = y;
+        positions[i * 3 + 2] = z;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+    const material = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.1, // Your preferred size
+        sizeAttenuation: true,
+        transparent: true,
+        opacity: 0.8
+    });
+
+    const stars = new THREE.Points(geometry, material);
+    scene.add(stars);
 }
 
 // Start the application when the page loads
