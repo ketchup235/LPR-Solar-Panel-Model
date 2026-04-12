@@ -9,53 +9,59 @@
 </head>
 
 <body>
-    <!-- Product title overlay -->
-    <div class="title-overlay">
-        <div class="title-left">
-            <h1>Solar Universe 340 Wp Monocrystalline Panel</h1>
+    <div id="viewerScreen" class="screen active-screen">
+        <!-- Product title overlay -->
+        <div class="title-overlay">
+            <div class="title-left">
+                <h1>Solar Universe 340 Wp Monocrystalline Panel</h1>
+            </div>
+            <div class="title-right">
+                <div class="spec-line">Solar Collection Effectiveness: <span class="spec-value">93%</span></div>
+                <div class="spec-line">Energy Transformation Efficiency: <span class="spec-value">97%</span></div>
+                <div class="spec-line">Dimensions: <span class="spec-value">201 × 102 cm</span></div>
+            </div>
         </div>
-        <div class="title-right">
-            <div class="spec-line">Solar Collection Effectiveness: <span class="spec-value">93%</span></div>
-            <div class="spec-line">Energy Transformation Efficiency: <span class="spec-value">97%</span></div>
-            <div class="spec-line">Dimensions: <span class="spec-value">201 × 102 cm</span></div>
+
+        <!-- Specifications panel -->
+        <div class="specs-panel">
+            <h3>Specifications</h3>
+            <div class="spec-row">
+                <span class="spec-label">Max Power</span>
+                <span class="spec-value">340 Wp</span>
+            </div>
+            <div class="spec-row">
+                <span class="spec-label">Cell Type</span>
+                <span class="spec-value">Monocrystalline PERC</span>
+            </div>
+            <div class="spec-row">
+                <span class="spec-label">Cell Count</span>
+                <span class="spec-value">60 (6 × 10)</span>
+            </div>
+            <div class="spec-row">
+                <span class="spec-label">Frame</span>
+                <span class="spec-value">Anodized Aluminum</span>
+            </div>
+            <div class="spec-row">
+                <span class="spec-label">Glass</span>
+                <span class="spec-value">3.2mm Tempered</span>
+            </div>
+            <div class="spec-row">
+                <span class="spec-label">Weight</span>
+                <span class="spec-value">18.5 kg</span>
+            </div>
+            <div class="spec-row">
+                <span class="spec-label">Tilt Angle</span>
+                <span class="spec-value">45°</span>
+            </div>
+            <div class="spec-row">
+                <span class="spec-label">Mount</span>
+                <span class="spec-value">Ground-mount Rack</span>
+            </div>
         </div>
     </div>
 
-    <!-- Specifications panel -->
-    <div class="specs-panel">
-        <h3>Specifications</h3>
-        <div class="spec-row">
-            <span class="spec-label">Max Power</span>
-            <span class="spec-value">340 Wp</span>
-        </div>
-        <div class="spec-row">
-            <span class="spec-label">Cell Type</span>
-            <span class="spec-value">Monocrystalline PERC</span>
-        </div>
-        <div class="spec-row">
-            <span class="spec-label">Cell Count</span>
-            <span class="spec-value">60 (6 × 10)</span>
-        </div>
-        <div class="spec-row">
-            <span class="spec-label">Frame</span>
-            <span class="spec-value">Anodized Aluminum</span>
-        </div>
-        <div class="spec-row">
-            <span class="spec-label">Glass</span>
-            <span class="spec-value">3.2mm Tempered</span>
-        </div>
-        <div class="spec-row">
-            <span class="spec-label">Weight</span>
-            <span class="spec-value">18.5 kg</span>
-        </div>
-        <div class="spec-row">
-            <span class="spec-label">Tilt Angle</span>
-            <span class="spec-value">45°</span>
-        </div>
-        <div class="spec-row">
-            <span class="spec-label">Mount</span>
-            <span class="spec-value">Ground-mount Rack</span>
-        </div>
+    <div id="imageScreen" class="screen image-screen" aria-hidden="true">
+        <img id="fullScreenImage" class="full-screen-image" alt="Panel information slide" />
     </div>
 
     <!-- Three.js from CDN -->

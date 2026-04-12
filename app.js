@@ -10,6 +10,27 @@ const CELLS_Y = 10;
 // Scene setup
 let scene, camera, renderer, controls;
 let solarPanelGroup;
+let activeScreen = 'viewer';
+let fourFingerGesture = null;
+let lastScreenSwitchTimestamp = 0;
+let currentImageIndex = -1;
+
+const FOUR_FINGER_SWIPE_MIN_DISTANCE = 90;
+const SCREEN_SWITCH_COOLDOWN_MS = 500;
+const IMAGE_SLIDES = [
+    createSlideDataUri(
+        'Solar Universe 340 Wp',
+        'Monocrystalline panel overview - swipe again for next image',
+        '#10395c',
+        '#081622'
+    ),
+    createSlideDataUri(
+        'Energy Snapshot',
+        'Stable local screen switching with no page reload required',
+        '#644020',
+        '#150d09'
+    )
+];
 
 // Initialize the 3D scene
 function init() {
@@ -35,7 +56,12 @@ function init() {
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    document.body.appendChild(renderer.domElement);
+    const viewerScreen = document.getElementById('viewerScreen');
+    if (viewerScreen) {
+        viewerScreen.prepend(renderer.domElement);
+    } else {
+        document.body.appendChild(renderer.domElement);
+    }
 
     // Controls
     controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -64,6 +90,9 @@ function init() {
     // Setup UI controls
     setupUIControls();
 
+    // Setup 4-finger swipe navigation between in-page screens
+    setupScreenNavigation();
+
     // Auto-hide hints after 5 seconds
     setTimeout(() => {
         const hints = document.getElementById('hints');
@@ -72,6 +101,147 @@ function init() {
 
     // Start animation loop
     animate();
+}
+
+function setupScreenNavigation() {
+    window.addEventListener('touchstart', onTouchStart, { passive: false });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('touchend', onTouchEndOrCancel, { passive: false });
+    window.addEventListener('touchcancel', onTouchEndOrCancel, { passive: false });
+}
+
+function onTouchStart(event) {
+    if (event.touches.length !== 4) {
+        return;
+    }
+
+    const center = getTouchesCenter(event.touches);
+    fourFingerGesture = {
+        startX: center.x,
+        startY: center.y,
+        switched: false
+    };
+
+    event.preventDefault();
+}
+
+function onTouchMove(event) {
+    if (!fourFingerGesture || event.touches.length < 4 || fourFingerGesture.switched) {
+        return;
+    }
+
+    const center = getTouchesCenter(event.touches);
+    const dx = center.x - fourFingerGesture.startX;
+    const dy = center.y - fourFingerGesture.startY;
+    const gestureDistance = Math.hypot(dx, dy);
+
+    if (gestureDistance < FOUR_FINGER_SWIPE_MIN_DISTANCE) {
+        event.preventDefault();
+        return;
+    }
+
+    const now = Date.now();
+    if (now - lastScreenSwitchTimestamp < SCREEN_SWITCH_COOLDOWN_MS) {
+        event.preventDefault();
+        return;
+    }
+
+    showNextImage();
+
+    fourFingerGesture.switched = true;
+    lastScreenSwitchTimestamp = now;
+    event.preventDefault();
+}
+
+function onTouchEndOrCancel(event) {
+    if (event.touches.length < 4) {
+        fourFingerGesture = null;
+    }
+}
+
+function getTouchesCenter(touches) {
+    let x = 0;
+    let y = 0;
+
+    for (let i = 0; i < 4; i++) {
+        x += touches[i].clientX;
+        y += touches[i].clientY;
+    }
+
+    return {
+        x: x / 4,
+        y: y / 4
+    };
+}
+
+function switchToScreen(screenName) {
+    const viewerScreen = document.getElementById('viewerScreen');
+    const imageScreen = document.getElementById('imageScreen');
+
+    if (!viewerScreen || !imageScreen) {
+        return;
+    }
+
+    if (screenName === 'image') {
+        activeScreen = 'image';
+        viewerScreen.classList.remove('active-screen');
+        viewerScreen.classList.add('inactive-screen');
+        viewerScreen.setAttribute('aria-hidden', 'true');
+
+        imageScreen.classList.remove('inactive-screen');
+        imageScreen.classList.add('active-screen');
+        imageScreen.setAttribute('aria-hidden', 'false');
+    }
+
+    if (screenName === 'viewer') {
+        activeScreen = 'viewer';
+        imageScreen.classList.remove('active-screen');
+        imageScreen.classList.add('inactive-screen');
+        imageScreen.setAttribute('aria-hidden', 'true');
+
+        viewerScreen.classList.remove('inactive-screen');
+        viewerScreen.classList.add('active-screen');
+        viewerScreen.setAttribute('aria-hidden', 'false');
+    }
+}
+
+function showNextImage() {
+    const imageElement = document.getElementById('fullScreenImage');
+    if (!imageElement || IMAGE_SLIDES.length === 0) {
+        return;
+    }
+
+    currentImageIndex = (currentImageIndex + 1) % IMAGE_SLIDES.length;
+    imageElement.src = IMAGE_SLIDES[currentImageIndex];
+    switchToScreen('image');
+}
+
+function createSlideDataUri(title, subtitle, colorA, colorB) {
+    const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${colorA}"/>
+      <stop offset="100%" stop-color="${colorB}"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <circle cx="1560" cy="240" r="360" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="300" cy="900" r="300" fill="rgba(255,255,255,0.06)"/>
+  <text x="120" y="460" fill="#ffffff" font-size="96" font-family="Segoe UI, Arial, sans-serif" font-weight="700">${escapeXml(title)}</text>
+  <text x="120" y="560" fill="rgba(255,255,255,0.88)" font-size="44" font-family="Segoe UI, Arial, sans-serif">${escapeXml(subtitle)}</text>
+</svg>`;
+
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg.trim())}`;
+}
+
+function escapeXml(text) {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
 }
 
 function setupLighting() {
