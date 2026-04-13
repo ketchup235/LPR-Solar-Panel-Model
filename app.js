@@ -17,6 +17,7 @@ let currentImageIndex = -1;
 
 const FOUR_FINGER_SWIPE_MIN_DISTANCE = 90;
 const SCREEN_SWITCH_COOLDOWN_MS = 500;
+const REPORT_IMAGE_SLIDE_SRC = 'construction-phase-report.png';
 const IMAGE_SLIDES = [
     createSlideDataUri(
         'Solar Universe 340 Wp',
@@ -24,6 +25,7 @@ const IMAGE_SLIDES = [
         '#10395c',
         '#081622'
     ),
+    REPORT_IMAGE_SLIDE_SRC,
     createSlideDataUri(
         'Energy Snapshot',
         'Stable local screen switching with no page reload required',
