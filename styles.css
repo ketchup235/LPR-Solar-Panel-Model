@@ -35,10 +35,10 @@ body {
 .image-screen {
     background: repeating-linear-gradient(
         45deg,
-        #ff0000 0px,
-        #ff0000 20px,
-        #ffff00 20px,
-        #ffff00 40px
+        #ae1f24 0px,
+        #ae1f24 20px,
+        #ffcb00 20px,
+        #ffcb00 40px
     );
     display: none;
     align-items: center;

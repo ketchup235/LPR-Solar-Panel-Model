@@ -17,21 +17,9 @@ let currentImageIndex = -1;
 
 const FOUR_FINGER_SWIPE_MIN_DISTANCE = 90;
 const SCREEN_SWITCH_COOLDOWN_MS = 500;
-const REPORT_IMAGE_SLIDE_SRC = 'construction-phase-report.png';
 const IMAGE_SLIDES = [
-    createSlideDataUri(
-        'Solar Universe 340 Wp',
-        'Monocrystalline panel overview - swipe again for next image',
-        '#10395c',
-        '#081622'
-    ),
-    REPORT_IMAGE_SLIDE_SRC,
-    createSlideDataUri(
-        'Energy Snapshot',
-        'Stable local screen switching with no page reload required',
-        '#644020',
-        '#150d09'
-    )
+    'ChatGPT Image Apr 6, 2026, 05_42_39 PM.png',
+    'Construction phase inspection report form.png'
 ];
 
 // Initialize the 3D scene
@@ -213,7 +201,15 @@ function showNextImage() {
         return;
     }
 
-    currentImageIndex = (currentImageIndex + 1) % IMAGE_SLIDES.length;
+    currentImageIndex++;
+    
+    // If we've cycled past the 2 images, return to viewer
+    if (currentImageIndex >= IMAGE_SLIDES.length) {
+        currentImageIndex = -1;
+        switchToScreen('viewer');
+        return;
+    }
+    
     imageElement.src = IMAGE_SLIDES[currentImageIndex];
     switchToScreen('image');
 }
