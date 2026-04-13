@@ -56,6 +56,13 @@ body {
     display: block;
 }
 
+.full-screen-image.rotated-document {
+    width: 100vh;
+    height: 100vw;
+    transform: rotate(90deg);
+    transform-origin: center center;
+}
+
 canvas {
     display: block;
     width: 100%;

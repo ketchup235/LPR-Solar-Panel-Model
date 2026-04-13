@@ -210,6 +210,7 @@ function showNextImage() {
         return;
     }
     
+    imageElement.classList.toggle('rotated-document', currentImageIndex === 1);
     imageElement.src = IMAGE_SLIDES[currentImageIndex];
     switchToScreen('image');
 }
